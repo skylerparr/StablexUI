@@ -52,6 +52,8 @@ class RTXml {
     */
     public var children : Array<RTXml>;
 
+    public var xml: Xml;
+
 /*******************************************************************************
 *       STATIC METHODS
 *******************************************************************************/
@@ -131,6 +133,7 @@ class RTXml {
     static public function processXml (node:Xml, interp:Interp = null) : RTXml {
         var cache : RTXml = new RTXml(interp);
         cache.cls = RTXml.getImportedClass(node.nodeName);
+        cache.xml = node;
 
         //attributes
         for(attr in node.attributes()){
@@ -187,6 +190,7 @@ class RTXml {
         //create widget instance
         var obj : Widget = Type.createInstance(this.cls, []);
         this.interp.variables.set("__ui__this", obj);
+        obj.rtXML = this;
 
         //apply defaults  {
             obj.defaults = this.defaults;

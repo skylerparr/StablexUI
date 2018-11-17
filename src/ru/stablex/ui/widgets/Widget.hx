@@ -129,6 +129,7 @@ class Widget extends TweenSprite{
     //layout manager
     public var layout : Layout;
 
+    public var rtXML: RTXml;
 
 /*******************************************************************************
 *       STATIC METHODS
