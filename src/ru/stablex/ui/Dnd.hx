@@ -91,7 +91,7 @@ class Dnd {
             var receive = Dnd.current.cloneWithType(DndEvent.RECEIVE);
 
             Dnd.current.obj.dispatchEvent( drop );
-            e.target.dispatchEvent( receive );
+            //e.target.dispatchEvent( receive );
         }
     }//function _onDrop()
 
