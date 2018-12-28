@@ -138,8 +138,12 @@ class RTXml {
         //attributes
         for(attr in node.attributes()){
             if(attr == "defaults"){
-                var expression = RTXml.parser.parseString( Attribute.fillShortcuts( node.get(attr) ) );
-                cache.defaults = interp.execute(expression);
+                try {
+                  var expression = RTXml.parser.parseString( Attribute.fillShortcuts( node.get(attr) ) );
+                  cache.defaults = interp.execute(expression);
+                } catch(e: Dynamic) {
+                  trace(e);
+                }
             }else{
                 cache.data.push( new Attribute(attr, node.get(attr)) );
             }
@@ -199,8 +203,12 @@ class RTXml {
         //}
 
         //apply properties
-        for(prop in this.data){
-            prop.apply(obj, this.interp);
+        try {
+            for(prop in this.data){
+                prop.apply(obj, this.interp);
+            }
+        } catch(e: Dynamic) {
+            trace(e);
         }
 
         obj._onInitialize();
@@ -350,7 +358,11 @@ class Attribute {
                 this._child = new Attribute(all.join("-"), expression);
             }
         }else{
-            this.value = RTXml.parser.parseString( Attribute.fillShortcuts(expression) );
+            try {
+                this.value = RTXml.parser.parseString( Attribute.fillShortcuts(expression) );
+            } catch(e: Dynamic) {
+                trace(e);
+            }
         }
     }//function init()
 
@@ -391,8 +403,12 @@ class Attribute {
             }
 
         //simple attribute
-        }else{
-            Reflect.setProperty(obj, this.name, interp.execute(this.value));
+        }else if(this.value != null){
+            try {
+                Reflect.setProperty(obj, this.name, interp.execute(this.value));
+            } catch(e: Dynamic) {
+                trace(e);
+            }
         }
     }//function apply()
 
@@ -417,7 +433,11 @@ class HandlerAttribute extends Attribute{
     */
     override public function init (type:String, expression:String) : Void {
         this.name  = type;
-        this.value = RTXml.parser.parseString( Attribute.fillShortcuts(expression) );
+        try {
+            this.value = RTXml.parser.parseString( Attribute.fillShortcuts(expression) );
+        } catch(e: Dynamic) {
+            trace(e);
+        }
     }//function init()
 
 
@@ -429,7 +449,11 @@ class HandlerAttribute extends Attribute{
         (obj:TweenSprite).addEventListener(RTXml.events.get(this.name), function(event:flash.events.Event){
             interp.variables.set("__ui__this", event.currentTarget);
             interp.variables.set("event", event);
-            interp.execute(this.value);
+            try {
+              interp.execute(this.value);
+            } catch(e: Dynamic) {
+              trace(e);
+            }
         });
     }//function apply()
 
