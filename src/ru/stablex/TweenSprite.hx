@@ -31,7 +31,6 @@ class TweenSprite extends Sprite{
     private var _listeners : Hash<List<Dynamic->Void>>;
     #end
 
-
     /**
     * Equal to <type>flash.display.Sprite</type>.addEventListener except this ignores `useCapture` and does not support weak references.
     *

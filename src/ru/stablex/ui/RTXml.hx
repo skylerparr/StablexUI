@@ -130,7 +130,7 @@ class RTXml {
     * Get data from xml for ui creation
     * @private
     */
-    static public function processXml (node:Xml, interp:Interp = null) : RTXml {
+    static public function processXml (node:Xml, interp:Interp = null, renderChildren: Bool = true) : RTXml {
         var cache : RTXml = new RTXml(interp);
         cache.cls = RTXml.getImportedClass(node.nodeName);
         cache.xml = node;
@@ -148,9 +148,15 @@ class RTXml {
                 cache.data.push( new Attribute(attr, node.get(attr)) );
             }
         }
-        //children
-        for(child in node.elements()){
-            cache.children.push( RTXml.processXml(child, cache.interp) );
+        if(renderChildren) {
+            //children
+            for(child in node.elements()){
+                var shouldRenderChildren: Bool = true;
+                if(child.get("cache") == "false") {
+                    shouldRenderChildren = false;
+                }
+                cache.children.push( RTXml.processXml(child, cache.interp, shouldRenderChildren) );
+            }
         }
 
         return cache;
@@ -407,6 +413,8 @@ class Attribute {
             try {
                 Reflect.setProperty(obj, this.name, interp.execute(this.value));
             } catch(e: Dynamic) {
+                trace(obj);
+                trace(this.name);
                 trace(e);
             }
         }
