@@ -122,7 +122,14 @@ class RTXml {
             }
         #end
 
-        return RTXml.processXml( Xml.parse(xmlStr).firstElement() ).create;
+        try {
+            return RTXml.processXml( Xml.parse(xmlStr).firstElement() ).create;
+        } catch(e: Dynamic) {
+            trace(e);
+            return function(d: Dynamic = null): Widget {
+                return new Widget();
+            }
+        }
     }//function buildFn()
 
 
@@ -155,7 +162,15 @@ class RTXml {
                 if(child.get("cache") == "false") {
                     shouldRenderChildren = false;
                 }
-                cache.children.push( RTXml.processXml(child, cache.interp, shouldRenderChildren) );
+                var childRTXml: RTXml;
+
+                try {
+                    childRTXml = RTXml.processXml(child, cache.interp, shouldRenderChildren);
+                } catch(e: Dynamic) {
+                    trace(e);
+                    childRTXml = new RTXml(interp);
+                }
+                cache.children.push( childRTXml );
             }
         }
 
@@ -413,9 +428,6 @@ class Attribute {
             try {
                 Reflect.setProperty(obj, this.name, interp.execute(this.value));
             } catch(e: Dynamic) {
-                trace(obj);
-                trace(this.name);
-                trace(e);
             }
         }
     }//function apply()
