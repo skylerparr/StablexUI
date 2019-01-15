@@ -382,7 +382,7 @@ class Attribute {
             try {
                 this.value = RTXml.parser.parseString( Attribute.fillShortcuts(expression) );
             } catch(e: Dynamic) {
-                trace(e);
+                trace('${e}: ${this.value} ${name} ${expression}');
             }
         }
     }//function init()
